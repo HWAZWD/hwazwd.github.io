@@ -192,12 +192,10 @@ html {
   line-height: var(--font-base-lh);
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  min-height: 100vh;
 }
 body {
   font-size: var(--font-base-size);
   line-height: var(--font-base-lh);
-  min-height: 100vh;
 }
 *,
 *:before,
