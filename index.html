@@ -121,7 +121,7 @@
           <div class="card-text">
             
               <a href="/hello-world/" itemprop="url">
-                <h2 class="card-text--title">test1</h2>
+                <h2 class="card-text--title">test</h2>
               </a>
             
             <div class="card-text--row">
@@ -197,7 +197,47 @@
       <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
     </svg>
   </div>
-
+  <div
+    class="aplayer-box"
+    data-name="~你是我的小精灵~"
+    data-artist="蘇"
+    data-cover="/assets/img/小精灵.jpg"
+    data-url="/assets/music/小精灵.mp3"></div>
+  
+  <!-- aplayer 音频 start -->
+  <link rel="stylesheet" href="/assets/aplayer/aplayer.css">
+  <script type="text/javascript" src="/assets/aplayer/aplayer.js"></script>
+  <script type="text/javascript" src="/assets/pjax/jquery.js"></script>
+  <script type="text/javascript" src="/assets/pjax/pjax.js"></script>
+  <script type="text/javascript">
+    $(document).pjax('a[target!=_blank]', '.root-container', { fragment: '.root-container', timeout: 10000 })
+  </script>
+  <script type="text/javascript">
+    const aplayer = document.querySelectorAll(".aplayer-box");
+    aplayer && initaplayer(aplayer);
+    function initaplayer(els) {
+      let elsArr = Array.from(els);
+      elsArr.forEach(el => {
+        let params = {
+          container: el,
+          audio: { ...el.dataset },
+          theme: "#b7daff",
+          autoplay: true,
+          loop: true,
+          mutex: true,
+          mini: true,
+          fixed: true
+        }
+        console.log(params)
+        if (el.dataset.lrc) {
+          params['lrcType'] = 3
+        }
+        new APlayer(params);
+      });
+    }
+  </script>
+  <!-- aplayer 音频 end -->
+  
   
   <!-- aplayer -->
 
