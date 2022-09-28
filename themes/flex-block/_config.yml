@@ -56,8 +56,7 @@ dplayer:
 aplayer:
   enable: true
   theme: "#b7daff"
-  autoplay: false
-  loop: false
+  autoplay: true
   mutex: true
   lrcType: 3
 

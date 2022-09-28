@@ -1,7 +1,12 @@
 <% if (theme.aplayer.enable) { %>
   <!-- aplayer 音频 start -->
-  <link rel="stylesheet" href="https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.css">
-  <script type="text/javascript" src="https://unpkg.com/aplayer@1.10.1/dist/APlayer.min.js"></script>
+  <link rel="stylesheet" href="/assets/aplayer/aplayer.css">
+  <script type="text/javascript" src="/assets/aplayer/aplayer.js"></script>
+  <script type="text/javascript" src="/assets/pjax/jquery.js"></script>
+  <script type="text/javascript" src="/assets/pjax/pjax.js"></script>
+  <script type="text/javascript">
+    $(document).pjax('a[target!=_blank]', '.root-container', { fragment: '.root-container', timeout: 10000 })
+  </script>
   <script type="text/javascript">
     const aplayer = document.querySelectorAll(".aplayer-box");
     aplayer && initaplayer(aplayer);
@@ -13,9 +18,13 @@
           audio: { ...el.dataset },
           theme: "<%= theme.aplayer.theme %>",
           autoplay: <%= theme.aplayer.autoplay %>,
-          loop: <%= theme.aplayer.loop %>,
           mutex: <%= theme.aplayer.mutex %>,
+          mini: true,
+          fixed: true,
+          loop: 'all',
+          volume: 1
         }
+        console.log(params)
         if (el.dataset.lrc) {
           params['lrcType'] = <%= theme.aplayer.lrcType %>
         }
