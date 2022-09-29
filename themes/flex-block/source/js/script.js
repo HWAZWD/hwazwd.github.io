@@ -46,11 +46,11 @@ window.addEventListener("DOMContentLoaded", function() {
   })
 
   // theme auto click
-  document.querySelector('#theme-auto').addEventListener('click', function() {
+  /* document.querySelector('#theme-auto').addEventListener('click', function() {
     html.classList.remove('theme-light')
     html.classList.remove('theme-dark')
     window.localStorage.setItem('theme', '')
-  })
+  }) */
 
   // mobile nav click
   navBtn.addEventListener("click", function () {
