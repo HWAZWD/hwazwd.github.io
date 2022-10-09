@@ -82,6 +82,9 @@
 </body>
 <script type="text/javascript">
   $(document).pjax('a[target!=_blank]', '.root-container', { fragment: '.root-container', timeout: 10000 }).on('pjax:complete',function() {
+    // 图片懒加载
+    handleLazyBG()
+    // 初始化评论
     if($('.twikoo-container')) {
       twikoo.init({
         envId: 'http://localhost:8080',
