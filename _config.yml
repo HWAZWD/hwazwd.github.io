@@ -2,7 +2,7 @@
 ## Docs: https://hexo.io/docs/configuration.html
 ## Source: https://github.com/hexojs/hexo/
 
-pic_title: Happy
+pic_title: 
 
 # Site
 title: ~小蘇~
@@ -10,7 +10,7 @@ subtitle: ''
 description: ''
 keywords:
 author: HWAZWD
-language: zh-CN
+language: zh-TW
 timezone: ''
 
 # URL
