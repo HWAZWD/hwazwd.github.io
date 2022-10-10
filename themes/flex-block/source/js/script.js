@@ -4,7 +4,7 @@ window.addEventListener("DOMContentLoaded", function() {
   const navList         = document.querySelector(".navbar-list");
   const backToTopFixed  = document.querySelector(".back-to-top-fixed");
   let lastTop           = 0;
-  let theme             = window.localStorage.getItem('theme') || '';
+  let theme             = window.localStorage.getItem('theme') || 'theme-dark';
 
   theme && html.classList.add(theme)
 
