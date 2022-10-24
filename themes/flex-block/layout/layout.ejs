@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
+  <meta name="renderer" content="webkit">
   <meta name="theme-color" content="#3367D6"/>
   <link rel="apple-touch-icon" href="/icons-192.png">
   <link rel="manifest" href="/manifest.json">
   <script type="text/javascript" src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
   <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
   <script type="text/javascript" src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/twikoo/1.4.18/twikoo.all.min.js"></script>
-  <script type="text/javascript" src="/click.js"></script>
   <%- meta_generator() %>
 
   <% if (config.description) { %>
@@ -60,11 +60,21 @@
 </head>
 <body>
   <div class="root-container">
+    <%
+      var custom = ['wish', 'photo'];
+    %>
+    <% if (custom.indexOf(page.layout) != -1) { %>
+      <%- partial('_partial/nav', null, {cache: !config.relative_link}) %>
+      <%- body %>
+    <% } %>
+    
+    <% if (custom.indexOf(page.layout) == -1) { %>
     <%- partial('_partial/header') %>
 
     <%- body %>
 
     <%- partial('_partial/footer', null, {cache: !config.relative_link}) %>
+    <% } %>
   </div>
 
   <div class="back-to-top-fixed soft-size--round soft-style--box">
@@ -80,10 +90,19 @@
   <%# 加载自定义脚本代码 %>
   <%- partial('_partial/footer-other') %>
 </body>
+<script type="text/javascript" src="/js/click.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script type="text/javascript" src="/js/fun_title.js"></script>
+<!-- <script type="text/javascript" src="/js/snow.js"></script> -->
+<script type="text/javascript" src="/js/wish.js"></script>
 <script type="text/javascript">
+  refreshScript()
   $(document).pjax('a[target!=_blank]', '.root-container', { fragment: '.root-container', timeout: 10000 }).on('pjax:complete',function() {
-    // 图片懒加载
-    handleLazyBG()
+    refreshScript()
+    // 下雪
+    // resizeSnow()
+    // 清除许愿
+    // resizeWish()
     // 初始化评论
     if($('.twikoo-container')) {
       twikoo.init({

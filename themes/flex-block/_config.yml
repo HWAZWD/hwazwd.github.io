@@ -2,13 +2,14 @@
 menu:
   首页: /
   留言: /messages
-  关于: /about
+  相册: /photo
+  许个愿叭~: /wish
 
 # 主页banner图
 banner: http://rj64n9iaf.hb-bkt.clouddn.com/image/birthday.jpg
 
 # 站点通知信息
-notice: ~热烈庆祝小蘇同学破壳~
+notice: ~🎉热烈庆祝小蘇同学破壳🎉~
 
 # 作者信息
 author:

@@ -1,5 +1,15 @@
 <!-- 自定义页面 -->
+<%
+  var custom = ['wish', 'photo'];
+%>
+<% if (page.layout == "wish") { %>
+  <%- partial('../_widget/wish', { post: page }) %>
+<% } %>
+<% if (page.layout == "photo") { %>
+  <%- partial('../_widget/photo', { post: page }) %>
+<% } %>
 
+<% if (custom.indexOf(page.layout) == -1) { %>
 <div class="body-container">
   <article class="content-container layout-block post-container">
     <div class="article-info">
@@ -50,3 +60,4 @@
       <% } %>
   </article>
 </div>
+<% } %>

@@ -1,7 +1,7 @@
 /*样式一*/
 (function($){
     $.fn.snow = function(options){
-    var $flake = $('<div id="snowbox" />').css({'position': 'absolute','z-index':'9999', 'top': '-50px'}).html('&#10052;'),
+    var $flake = $('<div id="snowbox" />').css({'position': 'absolute','z-index':'7', 'top': '-50px'}).html('&#10052;'),
     documentHeight  = $(document).height(),
     documentWidth   = $(document).width(),
     defaults = {
@@ -78,8 +78,8 @@ function snowCanvas() {
     snowcanvas.id = "snowfall";
     snowcanvas.width = window.innerWidth;
     snowcanvas.height = document.body.clientHeight;
-    snowcanvas.setAttribute("style", "position:absolute; top: 0; left: 0; z-index: 1; pointer-events: none;");
-    document.getElementsByTagName("body")[0].appendChild(snowcanvas);
+    snowcanvas.setAttribute("style", "position:absolute; top: 0; left: 0;bottom: 0; right: 0; z-index: 1; pointer-events: none;");
+    $('body')[0].append(snowcanvas);
     this.canvas = snowcanvas;
     this.ctx = snowcanvas.getContext("2d");
     /* 窗口大小改变的处理 */
@@ -165,6 +165,15 @@ function drawSnow() {
         drawSnow.apply(that);
     });
 }
-/* 调用及控制方法 */
 var snow = new snowFall({maxFlake:60});
 snow.start();
+function resizeSnow() {
+	$(function() {
+		var snowCanvas = $('#snowfall')
+		if(snowCanvas) {
+			snow.canvas.width = $('body')[0].clientWidth;
+			snow.canvas.height = $('body')[0].clientHeight
+		}
+	})
+	
+}
