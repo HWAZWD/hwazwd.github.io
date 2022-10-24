@@ -382,7 +382,7 @@ html.show-mobile-nav .navbar-list {
 }
 .navbar {
   position: relative;
-  z-index: 2;
+  z-index: 101;
 }
 .navbar-content {
   display: flex;

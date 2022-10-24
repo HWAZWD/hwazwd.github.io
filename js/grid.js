@@ -158,7 +158,7 @@
 		// Preload images
 		imagesLoaded(body, function() {
 			// Initialize Masonry on each grid.
-			grids.forEach(function(grid) {
+			grids.forEach(function(grid, index) {
 				var m = new Masonry(grid, {
 					itemSelector: '.grid__item',
 					columnWidth: '.grid__sizer',
@@ -170,6 +170,9 @@
 				grid.classList.add('grid--hidden');
 				// Init GridLoaderFx.
 				loaders.push(new GridLoaderFx(grid));
+				if(index == 0) {
+					body.classList.remove('loading');
+				}
 			});
 
 			// Show current grid.
@@ -177,7 +180,7 @@
 			// Init/Bind events.
 			initEvents();
 			// Remove loading class from body
-			body.classList.remove('loading');
+			// body.classList.remove('loading');
 		});
 	}
 
