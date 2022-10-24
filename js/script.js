@@ -39,7 +39,6 @@ function handleLazyBG () {
 }
 
 function refreshScript() {
-  init()
   $(function() {
     const html            = document.querySelector("html");
     const navBtn          = document.querySelector(".navbar-btn");

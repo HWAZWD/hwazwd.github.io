@@ -14,8 +14,8 @@ body {
 	-webkit-font-smoothing: antialiased;
 }
 
-.js .loading::before,
-.js .loading::after {
+.loading::before,
+.loading::after {
 	content: '';
 	position: fixed;
 	z-index: 1000;
@@ -327,13 +327,13 @@ main {
 	opacity: 0;
 }
 
-.js .grid--loading::before,
-.js .grid--loading::after {
+.grid--loading::before,
+.grid--loading::after {
 	content: '';
 	z-index: 1000;
 }
 
-.js .grid--loading::before {
+.grid--loading::before {
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -342,7 +342,7 @@ main {
 	background: #2c2d31;
 }
 
-.js .grid--loading::after {
+.grid--loading::after {
 	position: absolute;
 	top: calc(25vh - 20px);
 	left: 50%;
