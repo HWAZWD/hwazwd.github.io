@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1">
+  <meta name="renderer" content="webkit">
+  <meta name="theme-color" content="#3367D6"/>
+  <link rel="apple-touch-icon" href="/icons-192.png">
+  <link rel="manifest" href="/manifest.json">
+  <script type="text/javascript" src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery/3.6.0/jquery.min.js"></script>
+  <script type="text/javascript" src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/jquery.pjax/2.0.1/jquery.pjax.min.js"></script>
+  <script type="text/javascript" src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/twikoo/1.4.18/twikoo.all.min.js"></script>
+  <meta name="generator" content="Hexo 6.3.0">
+
+  
+
+  
+
+  
+    <meta name="author" content="HWAZWD">
+  
+
+  
+
+  
+
+  <title>~小蘇~</title>
+
+  
+
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+
+  
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@1.1.3/index.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlightjs@9.16.2/styles/monokai.css">
+  
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+  <div class="root-container">
+    
+    
+      <!-- navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <!-- logo -->
+    <div class="navbar-logo">
+      <a href="/">
+        
+          ~小蘇~
+        
+      </a>
+    </div>
+    <!-- link -->
+    <div class="navbar-link">
+      <div class="navbar-btn">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+      <ul class="navbar-list">
+        
+          <li class="navbar-list-item"><a href="/">首页</a></li>
+        
+          <li class="navbar-list-item"><a href="/messages">留言</a></li>
+        
+          <li class="navbar-list-item"><a href="/photo">相册</a></li>
+        
+          <li class="navbar-list-item"><a href="/wish">许个愿叭~</a></li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+      <!-- 分页(其他自定义页面) -->
+
+<!-- 自定义页面 -->
+
+
+  <!-- 许愿页面 -->
+<div class="screen" style="height: 100vh;">
+  <div class="landscape"></div>
+  <div class="filter"></div>
+  <canvas id="wish"></canvas>
+  <div class="send">
+    <div class="input clearfix">
+      <input type="text" class="text">
+      <div class="btn">🤞</div>
+    </div>
+  </div>
+  <div class="s_show">
+    <div class="magictime twisterInUp">Forever 18</div>
+    <div class="magictime twisterInUp">天天睡到12点</div>
+    <div class="magictime twisterInUp">怒上白银</div>
+    <div class="magictime twisterInUp">一夜暴富</div>
+    <div class="magictime twisterInUp">身体倍棒，吃嘛嘛香</div>
+  </div>
+</div>
+<script type="text/javascript" src="/js/script.js"></script>
+<script>
+function degToRad(deg) {
+	return deg * (Math.PI / 180);
+}
+
+function setCanvasSize() {
+	WIDTH = document.documentElement.clientWidth,
+  HEIGHT = document.documentElement.clientHeight;                      
+
+	wishCanvas.setAttribute("width", WIDTH);
+	wishCanvas.setAttribute("height", HEIGHT);
+}
+
+function Star(id, x, y){
+	this.id = id;
+	this.x = x;
+	this.y = y;
+	this.r = Math.floor(Math.random()*2)+1;
+	var alpha = (Math.floor(Math.random()*10)+1)/10/2;
+	this.color = "rgba(255,255,255,"+alpha+")";
+}
+
+Star.prototype.draw = function() {
+	ctx.fillStyle = this.color;
+	ctx.shadowBlur = this.r * 2;
+	ctx.beginPath();
+	ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+	ctx.closePath();
+	ctx.fill();
+}
+
+Star.prototype.move = function() {
+	this.y -= .15;
+	if (this.y <= -10) this.y = HEIGHT + 10;
+	this.draw();
+}
+
+Star.prototype.die = function() {
+    stars[this.id] = null;
+    delete stars[this.id];
+}
+
+
+function Dot(id, x, y, r) {
+	this.id = id;
+	this.x = x;
+	this.y = y;
+	this.r = Math.floor(Math.random()*5)+1;
+	this.maxLinks = 2;
+	this.speed = .5;
+	this.a = .5;
+	this.aReduction = .005;
+	this.color = "rgba(255,255,255,"+this.a+")";
+	this.linkColor = "rgba(255,255,255,"+this.a/4+")";
+
+	this.dir = Math.floor(Math.random()*140)+200;
+}
+
+Dot.prototype.draw = function() {
+	ctx.fillStyle = this.color;
+	ctx.shadowBlur = this.r * 2;
+	ctx.beginPath();
+	ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+	ctx.closePath();
+	ctx.fill();
+}
+
+Dot.prototype.link = function() {
+	if (this.id == 0) return;
+	var previousDot1 = getPreviousDot(this.id, 1);
+	var previousDot2 = getPreviousDot(this.id, 2);
+	var previousDot3 = getPreviousDot(this.id, 3);
+	if (!previousDot1) return;
+	ctx.strokeStyle = this.linkColor;
+	ctx.moveTo(previousDot1.x, previousDot1.y);
+	ctx.beginPath();
+	ctx.lineTo(this.x, this.y);
+	if (previousDot2 != false) ctx.lineTo(previousDot2.x, previousDot2.y);
+	if (previousDot3 != false) ctx.lineTo(previousDot3.x, previousDot3.y);
+	ctx.stroke();
+	ctx.closePath();
+}
+
+function getPreviousDot(id, stepback) {
+	if (id == 0 || id - stepback < 0) return false;
+	if (typeof dots[id - stepback] != "undefined") return dots[id - stepback];
+	else return false;//getPreviousDot(id - stepback);
+}
+
+Dot.prototype.move = function() {
+	this.a -= this.aReduction;
+	if (this.a <= 0) {
+		this.die();
+		return
+	}
+	this.color = "rgba(255,255,255,"+this.a+")";
+	this.linkColor = "rgba(255,255,255,"+this.a/4+")";
+	this.x = this.x + Math.cos(degToRad(this.dir))*this.speed,
+	this.y = this.y + Math.sin(degToRad(this.dir))*this.speed;
+
+	this.draw();
+	this.link();
+}
+
+Dot.prototype.die = function() {
+    dots[this.id] = null;
+    delete dots[this.id];
+}
+
+
+var wishCanvas  = document.getElementById('wish')
+var ctx = wishCanvas.getContext('2d')
+var	WIDTH
+var	HEIGHT
+var	mouseMoving = false
+var	mouseMoveChecker
+var	mouseX
+var	mouseY
+var	stars = []
+var	initStarsPopulation = 80
+var	dots = []
+var	dotsMinDist = 2
+var	maxDistFromCursor = 50
+
+setCanvasSize();
+
+function drawIfMouseMoving(){
+	if (!mouseMoving) return;
+
+	if (dots.length == 0) {
+		dots[0] = new Dot(0, mouseX, mouseY);
+		dots[0].draw();
+		return;
+	}
+
+	var previousDot = getPreviousDot(dots.length, 1);
+	var prevX = previousDot.x; 
+	var prevY = previousDot.y; 
+
+	var diffX = Math.abs(prevX - mouseX);
+	var diffY = Math.abs(prevY - mouseY);
+
+	if (diffX < dotsMinDist || diffY < dotsMinDist) return;
+
+	var xVariation = Math.random() > .5 ? -1 : 1;
+	xVariation = xVariation*Math.floor(Math.random()*maxDistFromCursor)+1;
+	var yVariation = Math.random() > .5 ? -1 : 1;
+	yVariation = yVariation*Math.floor(Math.random()*maxDistFromCursor)+1;
+	dots[dots.length] = new Dot(dots.length, mouseX+xVariation, mouseY+yVariation);
+	dots[dots.length-1].draw();
+	dots[dots.length-1].link();
+}
+
+function animate() {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    for (var i in stars) {
+    	stars[i].move();
+    }
+    for (var i in dots) {
+    	dots[i].move();
+    }
+    drawIfMouseMoving();
+    requestAnimationFrame(animate);
+}
+
+function initCanvas() {
+	ctx.strokeStyle = "white";
+	ctx.shadowColor = "white";
+	for (var i = 0; i < initStarsPopulation; i++) {
+		stars[i] = new Star(i, Math.floor(Math.random()*WIDTH), Math.floor(Math.random()*HEIGHT));
+		//stars[i].draw();
+	}
+	ctx.shadowBlur = 0;
+	animate();
+}
+
+
+initCanvas();
+
+
+window.onmousemove = function(e){
+	mouseMoving = true;
+	mouseX = e.clientX;
+	mouseY = e.clientY;
+	clearInterval(mouseMoveChecker);
+	mouseMoveChecker = setTimeout(function() {
+		mouseMoving = false;
+	}, 100);
+}
+
+//随机颜色函数
+function randomColor(){
+	return '#' + Math.random().toString(16).slice(-6);//一行简化版截取后六位
+}
+					
+//模块化 每个功能函数去做自己相应的事情 代码可维护性 可扩展性
+//初始化函数
+var aShowList = document.querySelectorAll('.s_show div');//获取元素 H5
+var oShow = document.querySelector('.s_show');
+var oSend = document.querySelector('.send');
+var oBtn = document.querySelector('.btn');
+var oText = document.querySelector('.text');
+var time = 0;//上一次你发送的时间
+var time1 = 0;
+//点击发送弹幕
+            
+oBtn.onclick = function(){//鼠标点击事件
+	//oBtn.style.backgroundColor = randomColor();//按钮背景颜色变换
+  time1 = new Date();
+  oBtn.style.color = randomColor();//按钮字体颜色变换
+  if(time1 - time > 3000){//2次发送的时间必须大于2秒
+		var oDiv = document.createElement('div');//创建div
+		oDiv.innerHTML = oText.value;//添加弹幕内容
+		oDiv.className = 'magictime twisterInUp';//弹幕特效
+		oShow.appendChild(oDiv);//添加一个子节点 
+		init(oDiv);//初始化
+		oText.value = '';
+		time = time1;
+	}else{
+		alert("请稍后再发~");
+	}
+}
+
+//弹幕移动函数
+function move(k,obj,maxLeft){
+    var speed = k;//控制速度的变量
+    maxLeft -= speed;//往左移动
+    if(maxLeft > -obj.offsetWidth){
+        obj.style.left = maxLeft + 'px';
+        requestAnimationFrame(function(){
+        move(k,obj,maxLeft);
+    });//H5新增的动画函数
+    }else{
+        init(obj);//重新初始化 营造循环弹幕效果
+      /*  oShow.removeChild(obj);//DOM删除子节点 */
+    }
+}
+
+function init(obj){//接受弹幕对象
+//确定top值的随机区间
+    var screenHeight = document.documentElement.clientHeight;//获取屏幕可视高度
+    var maxTop = screenHeight - oSend.offsetHeight - 80 - obj.offsetHeight;//高度差范围
+    obj.style.top = maxTop * Math.random() + 'px';    
+//控制left值
+    var screenWidth = document.documentElement.clientWidth;//获取可视宽度
+    var maxLeft = screenWidth - obj.offsetWidth/* - Math.random() * 800 */;//随机宽度差
+    obj.style.left = maxLeft + 'px';
+//弹幕的随机颜色
+    obj.style.color = randomColor();
+    /*setInterval(function(){
+        move(obj,maxLeft);
+    },1000);*///普通定时器
+    move(Math.random()*1+1,obj,maxLeft);
+}
+            
+for(var i = 0;i < aShowList.length;i++){
+	init(aShowList[i]);//执行初始化函数
+}
+</script>
+
+<style>
+  .root-container {
+    background: none !important;
+  }
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  html,
+  body {
+    height: 100%;
+    user-select: none;
+  }
+
+  .screen {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
+  .send {
+    position: absolute;
+    bottom: 80px;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+  }
+
+  .input {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 280px;
+  }
+
+  .text {
+    color: #BA01FF;
+    font-size: 18px;
+    padding: 0 5px;
+    outline: none;
+    float: left;
+    width: 200px;
+    height: 40px;
+    border: none;
+    border-radius: 8px 0 0 8px;
+  }
+
+  .s_show div {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .btn {
+    float: left;
+    width: 80px;
+    background-color: lightcoral;
+    line-height: 40px;
+    font-size: 24px;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 0 8px 8px 0;
+  }
+
+  html,
+  body {
+    margin: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    cursor: none;
+    background: black;
+    background: linear-gradient(to bottom, #000000 0%, #5788fe 100%);
+  }
+
+  .filter {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #fe5757;
+    animation: colorChange 30s ease-in-out infinite;
+    animation-fill-mode: both;
+    mix-blend-mode: overlay;
+  }
+
+  @keyframes colorChange {
+
+    0%,
+    100% {
+      opacity: 0;
+    }
+
+    50% {
+      opacity: .9;
+    }
+  }
+
+  .landscape {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-size: 1000px 250px;
+    background-repeat: repeat-x;
+    background-position: center bottom;
+  }
+</style>
+
+
+
+
+
+    
+    
+    
+  </div>
+
+  <div class="back-to-top-fixed soft-size--round soft-style--box">
+    <svg class="icon icon-back-to-top" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <path d="M725.333333 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8l-213.333333-213.333333c-17.066667-17.066667-17.066667-42.666667 0-59.733333s42.666667-17.066667 59.733333 0l213.333333 213.333333c17.066667 17.066667 17.066667 42.666667 0 59.733333C746.666667 422.4 738.133333 426.666667 725.333333 426.666667z"></path>
+      <path d="M298.666667 426.666667c-12.8 0-21.333333-4.266667-29.866667-12.8-17.066667-17.066667-17.066667-42.666667 0-59.733333l213.333333-213.333333c17.066667-17.066667 42.666667-17.066667 59.733333 0s17.066667 42.666667 0 59.733333l-213.333333 213.333333C320 422.4 311.466667 426.666667 298.666667 426.666667z"></path>
+      <path d="M512 896c-25.6 0-42.666667-17.066667-42.666667-42.666667L469.333333 170.666667c0-25.6 17.066667-42.666667 42.666667-42.666667s42.666667 17.066667 42.666667 42.666667l0 682.666667C554.666667 878.933333 537.6 896 512 896z"></path>
+    </svg>
+  </div>
+  
+  <!-- aplayer 音频 start -->
+  <link rel="stylesheet" href="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css">
+  <script type="text/javascript" src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script>
+  
+  <div class="aplayer-box" style="z-index:101"></div>
+  <script type="text/javascript">
+    const aplayer = document.querySelectorAll(".aplayer-box");
+    aplayer && initaplayer(aplayer);
+    function initaplayer(els) {
+      let elsArr = Array.from(els);
+      let musics = [
+        {
+          name: '~小精灵~',
+          artist: '蘇',
+          cover: 'http://rj64n9iaf.hb-bkt.clouddn.com/image/%E5%B0%8F%E7%B2%BE%E7%81%B5.jpg',
+          url: 'http://rj64n9iaf.hb-bkt.clouddn.com/music/%E5%B0%8F%E7%B2%BE%E7%81%B5.mp3'
+        },
+        {
+          name: 'Happy Birthday',
+          artist: '蘇',
+          cover: 'http://rj64n9iaf.hb-bkt.clouddn.com/image/%E5%B0%8F%E7%B2%BE%E7%81%B5.jpg',
+          url: 'http://rj64n9iaf.hb-bkt.clouddn.com/music/HappyBirthday.mp3'
+        },
+        {
+          name: '~最爱下雨的我们~',
+          artist: '蘇',
+          cover: 'http://rj64n9iaf.hb-bkt.clouddn.com/image/%E5%B0%8F%E7%B2%BE%E7%81%B5.jpg',
+          url: 'http://rj64n9iaf.hb-bkt.clouddn.com/music/Rain.mp3'
+        },
+        {
+          name: '~Baby,我都不会接吻~',
+          artist: '蘇',
+          cover: 'http://rj64n9iaf.hb-bkt.clouddn.com/image/%E5%B0%8F%E7%B2%BE%E7%81%B5.jpg',
+          url: 'http://rj64n9iaf.hb-bkt.clouddn.com/music/Baby%E6%88%91%E9%83%BD%E4%B8%8D%E4%BC%9A%E6%8E%A5%E5%90%BB.mp3'
+        },
+        {
+          name: '~东西~',
+          artist: '蘇',
+          cover: 'http://rj64n9iaf.hb-bkt.clouddn.com/image/%E5%B0%8F%E7%B2%BE%E7%81%B5.jpg',
+          url: 'http://rj64n9iaf.hb-bkt.clouddn.com/music/%E4%B8%9C%E8%A5%BF.mp3'
+        }
+      ]
+      elsArr.forEach(el => {
+        let params = {
+          container: el,
+          audio: musics,
+          theme: "#b7daff",
+          autoplay: true,
+          mutex: true,
+          mini: true,
+          fixed: true,
+          loop: 'all',
+          volume: 1
+        }
+        if (el.dataset.lrc) {
+          params['lrcType'] = 3
+        }
+        new APlayer(params);
+      });
+    }
+  </script>
+  <!-- aplayer 音频 end -->
+  
+  
+  <!-- aplayer -->
+
+
+<!-- dplayer -->
+
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+<!-- 
+<script src="/js/script.js"></script>
+ -->
+
+  
+  <!-- 尾部用户自定义相关内容 -->
+</body>
+<script type="text/javascript" src="/js/click.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+<script type="text/javascript" src="/js/fun_title.js"></script>
+<!-- <script type="text/javascript" src="/js/snow.js"></script> -->
+<script type="text/javascript" src="/js/wish.js"></script>
+<script type="text/javascript">
+  refreshScript()
+  $(document).pjax('a[target!=_blank]', '.root-container', { fragment: '.root-container', timeout: 10000 }).on('pjax:complete',function() {
+    refreshScript()
+    // 下雪
+    // resizeSnow()
+    // 清除许愿
+    // resizeWish()
+    // 初始化评论
+    if($('.twikoo-container')) {
+      twikoo.init({
+        envId: 'https://hwazwd.love:9510',
+        el: '.twikoo-container',
+        lang: 'zh-CN'
+      }) 
+    }
+  })
+</script>
+</html>
