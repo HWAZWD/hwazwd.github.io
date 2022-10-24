@@ -142,7 +142,15 @@
   <div class="comments-container content-padding--primary soft-size--large soft-style--box">
     <div class="twikoo-container"></div>
   </div>
-
+  <script>
+    if($('.twikoo-container')) {
+      twikoo.init({
+        envId: 'https://hwazwd.love:9510',
+        el: '.twikoo-container',
+        lang: 'zh-CN'
+      }) 
+    }
+  </script>
   <style>
     .article-info {
       flex: 0 1 100% !important;
